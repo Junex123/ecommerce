@@ -1,0 +1,15 @@
+package coms.repository;
+
+public enum Order {
+    PLACED,
+    PROCESSING,
+    SHIPPED,
+    DELIVERED,
+    RETURN_REQUESTED,
+    RETURN_APPROVED,
+    RETURN_REJECTED,
+    EXCHANGE_REQUESTED,
+    EXCHANGE_APPROVED,
+    EXCHANGE_REJECTED,
+    CANCELLED;
+}

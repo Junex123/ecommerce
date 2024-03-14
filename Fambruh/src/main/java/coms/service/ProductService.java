@@ -1,0 +1,115 @@
+package coms.service;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import coms.model.product.Product;
+import coms.model.product.ProductImage;
+import coms.model.product.ProductSize;
+import coms.model.product.comboproduct;
+import coms.repository.ComboProductRepository;
+import coms.repository.ProductImageRepository;
+import coms.repository.ProductRepo;
+import coms.repository.ProductSizeRepository;
+
+@Service
+public class ProductService {
+    
+    @Autowired
+    private ProductRepo productRepo;
+    
+    @Autowired
+    private ProductImageRepository productImageRepository;
+    
+    @Autowired
+    private ProductSizeRepository productSizeRepository;
+
+    @Autowired
+    private ComboProductRepository comboProductRepository;
+
+    // Product Services
+
+    // Add a product
+    public Product addProduct(Product product) {
+        return this.productRepo.save(product);
+    }
+    
+    // Find a product by ID
+    public Product findProduct(Long pid) {
+        return this.productRepo.findById(pid).orElse(null);
+    }
+    
+    // Find all products
+    public List<Product> findAllProducts() {
+        return this.productRepo.findAll();
+    }
+    
+    // Find products by name or salt
+    public List<Product> findByNameOrSalt(String name, String salt) {
+        return this.productRepo.findByNameContainingIgnoreCaseOrSaltContainingIgnoreCase(name, salt);
+    }
+    
+    // Delete a product by ID
+    public void deleteProductById(Long pid) {
+        this.productRepo.deleteById(pid);
+    }
+    
+    // Find available products by name
+    public List<Product> findTrueProduct(String name) {
+        return this.productRepo.findByNameAndIsAvailableTrue(name);
+    }
+
+    // Product Image Services
+
+    // Add a product image
+    public ProductImage addProductImage(ProductImage productImage) {
+        return this.productImageRepository.save(productImage);
+    }
+
+    // Find all product images
+    public List<ProductImage> findAllProductImages() {
+        return this.productImageRepository.findAll();
+    }
+
+    // Find a product image by ID
+    public ProductImage findProductImageById(Long imgId) {
+        return this.productImageRepository.findById(imgId).orElse(null);
+    }
+
+    // Product Size Services
+
+    // Add a product size
+    public ProductSize addProductSize(ProductSize productSize) {
+        return this.productSizeRepository.save(productSize);
+    }
+
+    // Find all product sizes
+    public List<ProductSize> findAllProductSizes() {
+        return this.productSizeRepository.findAll();
+    }
+
+    // Combo Product Services
+
+    // Add a combo product
+    public comboproduct addComboProduct(comboproduct comboProduct) {
+        return this.comboProductRepository.save(comboProduct);
+    }
+
+    // Find all combo products
+    public List<comboproduct> findAllComboProducts() {
+        return this.comboProductRepository.findAll();
+    }
+
+    // Other Product Services (if any)
+    // Find a combo product by ID
+    public comboproduct findComboProduct(Long id) {
+        return this.comboProductRepository.findById(id).orElse(null);
+    }
+
+    // Delete a combo product by ID
+    public void deleteComboProductById(Long id) {
+        this.comboProductRepository.deleteById(id);
+    }
+    // ...
+}
