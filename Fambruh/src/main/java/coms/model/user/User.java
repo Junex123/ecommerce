@@ -54,7 +54,7 @@ public class User implements UserDetails{
 		super();
 	}
 
-	public User(Long userId, String username, String password, String firstName, String lastName, String contactNumber,
+	public User(Long userId, String username, String password,String contactNumber,
 			boolean enabled, Set<UserRole> userRoles,String email) {
 		super();
 		this.userId = userId;

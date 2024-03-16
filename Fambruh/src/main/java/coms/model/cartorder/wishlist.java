@@ -1,44 +1,57 @@
 package coms.model.cartorder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+
 
 import coms.model.product.Product;
+import coms.model.user.User;
 
 @Entity
-public class wishlist {
+public class Wishlist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int wishid;
 
+    @ManyToOne
+    private User user;
+
     @OneToOne
     private Product product;
 
-    public wishlist() {
-        // Default constructor
-    }
+	public Wishlist() {
+		super();
+	}
 
-    public wishlist(Product product) {
-        this.wishid = wishid;
-        this.product = product;
-    }
+	public Wishlist(User user, Product product) {
+		super();
+		this.user = user;
+		this.product = product;
+	}
 
-    public int getId() {
-        return wishid;
-    }
+	public int getWishid() {
+		return wishid;
+	}
 
-    public void setId(int id) {
-        this.wishid = id;
-    }
+	public void setWishid(int wishid) {
+		this.wishid = wishid;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+    // Constructors, getters, and setters
 }

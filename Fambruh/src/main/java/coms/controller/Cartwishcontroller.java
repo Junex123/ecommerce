@@ -7,8 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import coms.model.cartorder.CartItem;
-import coms.model.cartorder.wishlist;
+import coms.model.cartorder.Wishlist;
 import coms.model.product.Product;
+import coms.repository.Size;
 import coms.service.Cartwishservice;
 
 import java.util.List;
@@ -21,40 +22,39 @@ public class Cartwishcontroller {
     private Cartwishservice cartWishService;
 
     @GetMapping("/cart")
-    public ResponseEntity<List<CartItem>> getAllCartItems() {
-        List<CartItem> cartItems = cartWishService.getAllCartItems();
+    public ResponseEntity<List<CartItem>> getAllCartItems(@RequestParam String username) {
+        List<CartItem> cartItems = cartWishService.getAllCartItemsByUsername(username);
         return ResponseEntity.ok(cartItems);
     }
 
     @GetMapping("/wishlist")
-    public ResponseEntity<List<wishlist>> getAllWishlistItems() {
-        List<wishlist> wishlistItems = cartWishService.getAllWishlistItems();
+    public ResponseEntity<List<Wishlist>> getAllWishlistItems(@RequestParam String username) {
+        List<Wishlist> wishlistItems = cartWishService.getAllWishlistItemsByUsername(username);
         return ResponseEntity.ok(wishlistItems);
     }
 
     @PostMapping("/cart/add")
-    public ResponseEntity<?> addToCart(@RequestBody Product product, @RequestParam int quantity) {
-        cartWishService.addToCart(product, quantity);
+    public ResponseEntity<?> addToCart(@RequestBody Product product, @RequestParam int quantity, @RequestParam String username) {
+        cartWishService.addToCart(product, quantity, username);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // Method to add a product to the wishlist (only accessible to users)
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/wishlist/add")
-    public ResponseEntity<?> addToWishlist(@RequestBody Product product) {
-        cartWishService.addToWishlist(product);
+    public ResponseEntity<?> addToWishlist(@RequestBody Product product, @RequestParam String username) {
+        cartWishService.addToWishlist(product, username);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/cart/move/{cartItemId}")
-    public ResponseEntity<?> moveCartItemToWishlist(@PathVariable Long cartItemId) {
-        cartWishService.moveCartItemToWishlist(cartItemId);
+    public ResponseEntity<?> moveCartItemToWishlist(@PathVariable Long cartItemId, @RequestParam String username) {
+        cartWishService.moveCartItemToWishlist(cartItemId, username);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/wishlist/move/{wishlistItemId}")
-    public ResponseEntity<?> moveWishlistItemToCart(@PathVariable Integer wishlistItemId, @RequestParam int quantity) {
-        cartWishService.moveWishlistItemToCart(wishlistItemId, quantity);
+    public ResponseEntity<?> moveWishlistItemToCart(@PathVariable int wishlistItemId, @RequestParam String username) {
+        cartWishService.moveWishlistItemToCart(wishlistItemId, username);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -65,7 +65,7 @@ public class Cartwishcontroller {
     }
 
     @DeleteMapping("/wishlist/{wishlistItemId}")
-    public ResponseEntity<?> removeWishlistItemById(@PathVariable Integer wishlistItemId) {
+    public ResponseEntity<?> removeWishlistItemById(@PathVariable int wishlistItemId) {
         cartWishService.removeWishlistItemById(wishlistItemId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -73,6 +73,13 @@ public class Cartwishcontroller {
     @PutMapping("/cart/update/{cartItemId}")
     public ResponseEntity<?> updateCartItemQuantity(@PathVariable Long cartItemId, @RequestParam int quantity) {
         cartWishService.updateCartItemQuantity(cartItemId, quantity);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // Additional method to update the size of a cart item
+    @PutMapping("/cart/update/size/{cartItemId}")
+    public ResponseEntity<?> updateCartItemSize(@PathVariable Long cartItemId, @RequestParam Size size) {
+        cartWishService.updateCartItemSize(cartItemId, size);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

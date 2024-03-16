@@ -1,10 +1,9 @@
 package coms.model.cartorder;
 
 import javax.persistence.*;
-
 import coms.model.product.ProductQuantity;
+import coms.repository.Order;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,48 +20,44 @@ public class UserOrder {
     private String state;
     private String contact;
     private String date;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private Order status;
+
     private String returnStatus; // Status for return functionality
     private String replacementStatus; // Status for replacement functionality
     private Double paidAmount;
     private String paymentMode;
     private boolean confirmationEmailSent; // New field for order confirmation email
     private boolean addressVerified; // New field for address verification
-    
+
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<ProductQuantity> products = new HashSet<>();
 
     public UserOrder() {
     }
 
-  
+    public UserOrder(String username, String address, String district, int pinCode, String state, String contact, String date, Order status, String returnStatus, String replacementStatus, Double paidAmount, String paymentMode, boolean confirmationEmailSent, boolean addressVerified, Set<ProductQuantity> products) {
+        this.username = username;
+        this.address = address;
+        this.district = district;
+        this.pinCode = pinCode;
+        this.state = state;
+        this.contact = contact;
+        this.date = date;
+        this.status = status;
+        this.returnStatus = returnStatus;
+        this.replacementStatus = replacementStatus;
+        this.paidAmount = paidAmount;
+        this.paymentMode = paymentMode;
+        this.confirmationEmailSent = confirmationEmailSent;
+        this.addressVerified = addressVerified;
+        this.products = products;
+    }
 
-	public UserOrder(Long orderId, String username, String address, String district, int pinCode, String state,
-			String contact, String date, String status, String returnStatus, String replacementStatus,
-			Double paidAmount, String paymentMode, boolean confirmationEmailSent, boolean addressVerified,
-			Set<ProductQuantity> products) {
-		super();
-		this.orderId = orderId;
-		this.username = username;
-		this.address = address;
-		this.district = district;
-		this.pinCode = pinCode;
-		this.state = state;
-		this.contact = contact;
-		this.date = date;
-		this.status = status;
-		this.returnStatus = returnStatus;
-		this.replacementStatus = replacementStatus;
-		this.paidAmount = paidAmount;
-		this.paymentMode = paymentMode;
-		this.confirmationEmailSent = confirmationEmailSent;
-		this.addressVerified = addressVerified;
-		this.products = products;
-	}
+    // Getters and setters...
 
-
-
-	public Long getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
@@ -98,8 +93,8 @@ public class UserOrder {
         return pinCode;
     }
 
-    public void setPinCode(int i) {
-        this.pinCode = i;
+    public void setPinCode(int pinCode) {
+        this.pinCode = pinCode;
     }
 
     public String getState() {
@@ -122,15 +117,15 @@ public class UserOrder {
         return date;
     }
 
-    public void setDate(String orderDate) {
-        this.date = orderDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getStatus() {
+    public Order getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Order status) {
         this.status = status;
     }
 
@@ -166,13 +161,6 @@ public class UserOrder {
         this.paymentMode = paymentMode;
     }
 
-    public Set<ProductQuantity> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<ProductQuantity> products) {
-        this.products = products;
-    }
     public boolean isConfirmationEmailSent() {
         return confirmationEmailSent;
     }
@@ -189,7 +177,11 @@ public class UserOrder {
         this.addressVerified = addressVerified;
     }
 
+    public Set<ProductQuantity> getProducts() {
+        return products;
+    }
 
-
-	
+    public void setProducts(Set<ProductQuantity> products) {
+        this.products = products;
+    }
 }

@@ -14,22 +14,16 @@ public class comboproduct {
 
     @OneToOne
     private Product product2;
-
-    // Sizes for product1 and product2
-    private String size1;
-    private String size2;
-
     // Additional fields, constructors, getters, and setters...
 
     public comboproduct() {
         // Default constructor for JPA
     }
 
-    public comboproduct(Product product1, Product product2, String size1, String size2) {
+    public comboproduct(Product product1, Product product2) {
         this.product1 = product1;
         this.product2 = product2;
-        this.size1 = size1;
-        this.size2 = size2;
+    
     }
 
     public Long getId() {
@@ -56,19 +50,5 @@ public class comboproduct {
         this.product2 = product2;
     }
 
-    public String getSize1() {
-        return size1;
-    }
 
-    public void setSize1(String size1) {
-        this.size1 = size1;
-    }
-
-    public String getSize2() {
-        return size2;
-    }
-
-    public void setSize2(String size2) {
-        this.size2 = size2;
-    }
 }

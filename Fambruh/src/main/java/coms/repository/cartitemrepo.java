@@ -1,10 +1,13 @@
 package coms.repository;
+
+import coms.model.cartorder.CartItem;
+import coms.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import coms.model.cartorder.CartItem;
+import java.util.List;
 
 @Repository
 public interface cartitemrepo extends JpaRepository<CartItem, Long> {
-    CartItem findByProductId(Long productId);
+    List<CartItem> findByUserUsername(String username);
 }

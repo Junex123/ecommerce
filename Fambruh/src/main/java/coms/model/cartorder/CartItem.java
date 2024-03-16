@@ -1,44 +1,93 @@
 package coms.model.cartorder;
 
-import coms.model.product.Product;
-import coms.model.product.comboproduct;
+import javax.persistence.*;
 
+
+import coms.model.product.Product;
+import coms.model.user.User;
+import coms.repository.Size;
+import coms.model.product.*;
+
+@Entity
 public class CartItem {
 
-    private Product product; 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private User user;
+
+    @OneToOne
+    private Product product;
+
+    @OneToOne
     private comboproduct comboproduct;
-    private int quantity;
 
-    public CartItem() {
-    }
+    @Enumerated(EnumType.STRING) // Assuming Size is an Enum
+    private Size size; // Add this field to store the size of the product
+    
+	public CartItem() {
+		super();
+	}
 
-    // Constructor for regular product
-    public CartItem(Product product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
 
-    // Constructor for combo product
-    public CartItem(comboproduct comboproduct, int quantity) {
-        this.comboproduct = comboproduct;
-        this.quantity = quantity;
-    }
+	public CartItem(User user, Product product, coms.model.product.comboproduct comboproduct, Size size) {
+		super();
+		this.user = user;
+		this.product = product;
+		this.comboproduct = comboproduct;
+		this.size = size;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public comboproduct getComboproduct() {
-        return comboproduct;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setComboproduct(comboproduct comboproduct) {
-        this.comboproduct = comboproduct;
-    }
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public comboproduct getComboproduct() {
+		return comboproduct;
+	}
+
+	public void setComboproduct(comboproduct comboproduct) {
+		this.comboproduct = comboproduct;
+	}
+
+
+	public Size getSize() {
+		return size;
+	}
+
+
+	public void setSize(Size size) {
+		this.size = size;
+	}
+
+
+
+    private int quantity; // Add quantity field
+
+    // Constructor and other methods...
 
     public int getQuantity() {
         return quantity;
@@ -47,4 +96,7 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    
+    
 }

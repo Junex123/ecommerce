@@ -16,7 +16,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import coms.configuration.ImageUtil;
-import coms.model.*;
 import coms.model.product.Product;
 import coms.model.product.ProductImage;
 import coms.model.product.comboproduct;
@@ -44,7 +43,7 @@ public class ProductController {
         Product p = null;
         try {
             p = objectMapper.readValue(product, Product.class);
-            p.setProductImage(img);
+            p.getProductImages().add(img); // Adding the image to the product's image set
         } catch (JsonMappingException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
@@ -74,12 +73,17 @@ public class ProductController {
     @GetMapping("get-product/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") Long id){
         Product product = this.productService.findProduct(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        // Decompress image and set it to the product
         ProductImage img =  new ProductImage();
-        img.setImageData(ImageUtil.decompressImage(product.getProductImage().getImageData()));
-        img.setImgId(product.getProductImage().getImgId());
-        img.setName(product.getProductImage().getName());
-        img.setType(product.getProductImage().getType());
-        product.setProductImage(img);
+        img.setImageData(ImageUtil.decompressImage(product.getProductImages().iterator().next().getImageData()));
+        img.setImgId(product.getProductImages().iterator().next().getImgId());
+        img.setName(product.getProductImages().iterator().next().getName());
+        img.setType(product.getProductImages().iterator().next().getType());
+        product.getProductImages().clear();
+        product.getProductImages().add(img);
         return ResponseEntity.ok(product);
     }
     
@@ -87,38 +91,40 @@ public class ProductController {
     @GetMapping("/get/all-products")
     public ResponseEntity<?> getAllProducts(){
         List<Product> allProducts = this.productService.findAllProducts();
-        allProducts.forEach(product -> {
-            ProductImage img =  new ProductImage();
-            img.setImageData(ImageUtil.decompressImage(product.getProductImage().getImageData()));
-            img.setImgId(product.getProductImage().getImgId());
-            img.setName(product.getProductImage().getName());
-            img.setType(product.getProductImage().getType());
-            product.setProductImage(img);
-        });
         if(allProducts.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            return ResponseEntity.ok(allProducts);
+            return ResponseEntity.notFound().build();
         }
+        for (Product product : allProducts) {
+            // Decompress image and set it to each product
+            ProductImage img =  new ProductImage();
+            img.setImageData(ImageUtil.decompressImage(product.getProductImages().iterator().next().getImageData()));
+            img.setImgId(product.getProductImages().iterator().next().getImgId());
+            img.setName(product.getProductImages().iterator().next().getName());
+            img.setType(product.getProductImages().iterator().next().getType());
+            product.getProductImages().clear();
+            product.getProductImages().add(img);
+        }
+        return ResponseEntity.ok(allProducts);
     }
     
     // Get products by name
     @GetMapping(value = {"/get/products/{name}"})
     public ResponseEntity<?> getProductByName(@PathVariable("name") String name,@PathVariable("name") String salt){
         List<Product> products = this.productService.findByNameOrSalt(name, salt);
-        products.forEach(product -> {
-            ProductImage img =  new ProductImage();
-            img.setImageData(ImageUtil.decompressImage(product.getProductImage().getImageData()));
-            img.setImgId(product.getProductImage().getImgId());
-            img.setName(product.getProductImage().getName());
-            img.setType(product.getProductImage().getType());
-            product.setProductImage(img);
-        });
         if(products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            return ResponseEntity.ok(products);
+            return ResponseEntity.notFound().build();
         }
+        for (Product product : products) {
+            // Decompress image and set it to each product
+            ProductImage img =  new ProductImage();
+            img.setImageData(ImageUtil.decompressImage(product.getProductImages().iterator().next().getImageData()));
+            img.setImgId(product.getProductImages().iterator().next().getImgId());
+            img.setName(product.getProductImages().iterator().next().getName());
+            img.setType(product.getProductImages().iterator().next().getType());
+            product.getProductImages().clear();
+            product.getProductImages().add(img);
+        }
+        return ResponseEntity.ok(products);
     }
 
     // Delete product by ID
@@ -126,7 +132,7 @@ public class ProductController {
     @DeleteMapping("/delete/product/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id){
         this.productService.deleteProductById(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
     
     // Set product availability
@@ -134,9 +140,12 @@ public class ProductController {
     @PutMapping("/set-availability/product/{id}")
     public ResponseEntity<?> setAvailability(@PathVariable("id") Long id, @RequestBody Product product){
         Product updateProduct = this.productService.findProduct(id);
+        if (updateProduct == null) {
+            return ResponseEntity.notFound().build();
+        }
         updateProduct.setAvailable(product.isAvailable());
         this.productService.addProduct(updateProduct);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok().build();
     }
     
     // Get available products
@@ -144,13 +153,13 @@ public class ProductController {
     public ResponseEntity<?> getAvailable(@PathVariable("name") String name){
         List<Product> products = this.productService.findTrueProduct(name);
         if(products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(products);
         }
     }
 
- // Add new combo product
+    // Add new combo product
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add/comboproduct")
     public ResponseEntity<?> addNewComboProduct(@RequestBody comboproduct comboProduct) {
@@ -166,12 +175,10 @@ public class ProductController {
         if (existingComboProduct != null) {
             existingComboProduct.setProduct1(comboProduct.getProduct1());
             existingComboProduct.setProduct2(comboProduct.getProduct2());
-            existingComboProduct.setSize1(comboProduct.getSize1());
-            existingComboProduct.setSize2(comboProduct.getSize2());
             productService.addComboProduct(existingComboProduct);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -182,7 +189,7 @@ public class ProductController {
         if (comboProduct != null) {
             return ResponseEntity.ok(comboProduct);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -198,9 +205,6 @@ public class ProductController {
     @DeleteMapping("/delete/comboproduct/{id}")
     public ResponseEntity<?> deleteComboProduct(@PathVariable("id") Long id) {
         productService.deleteComboProductById(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
-
-
-
 }

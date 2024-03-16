@@ -64,12 +64,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/get/all-blogs", "/get-blog/{title}", "/add/blog").permitAll() // Blog endpoints
             .antMatchers("/newsletter/subscriptions", "/newsletter/subscription/**", "/newsletter/subscribe", "/newsletter/unsubscribe/**").permitAll() // Newsletter endpoints
             .antMatchers(HttpMethod.OPTIONS).permitAll() // Allow pre-flight requests
+            .antMatchers("/get/order-invoice/**").permitAll() // Allow access to the order-invoice endpoint
             .anyRequest().authenticated() // All other requests require authentication
             .and().exceptionHandling().authenticationEntryPoint(authEntryPoint)
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-
 }
