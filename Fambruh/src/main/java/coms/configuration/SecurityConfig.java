@@ -48,7 +48,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
     }
-
+//
+//    
+//    @Bean
+//    public JavaMailSender javaMailSender() {
+//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost("your.smtp.host"); // Set your SMTP host here
+//        mailSender.setPort(587); // Set your SMTP port here (typically 587 for TLS)
+//        mailSender.setUsername("your.email@example.com"); // Set your email username
+//        mailSender.setPassword("your-email-password"); // Set your email password
+//        // You can configure more properties like protocol, default encoding, etc.
+//        return mailSender;
+//    }
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

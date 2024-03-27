@@ -10,7 +10,7 @@ import coms.model.user.User;
 import javax.persistence.*;
 
 @Entity
-public class Cart {
+public class CartItem {
 	  @Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long cartId;
@@ -18,17 +18,54 @@ public class Cart {
 	    private Product product;
 	    @OneToOne
 	    private User user;
-		
-	    
-	    public Cart() {
+		private int quantity;
+		  @OneToOne
+		    private comboproduct comboproduct;
+	    public CartItem() {
 			super();
 		}
 
 
-		public Cart(Product product, User user) {
+		public CartItem(comboproduct comboproduct,User user) {
+			super();
+			this.user = user;
+			this.comboproduct = comboproduct;
+		}
+
+
+		
+
+
+	
+
+
+	
+
+		public CartItem(Product product, User user, int quantity) {
 			super();
 			this.product = product;
 			this.user = user;
+			this.quantity = quantity;
+		}
+
+
+		public comboproduct getComboproduct() {
+			return comboproduct;
+		}
+
+
+		public void setComboproduct(comboproduct comboproduct) {
+			this.comboproduct = comboproduct;
+		}
+
+
+		public int getQuantity() {
+			return quantity;
+		}
+
+
+		public void setQuantity(int quantity) {
+			this.quantity = quantity;
 		}
 
 
@@ -60,7 +97,9 @@ public class Cart {
 		public void setUser(User user) {
 			this.user = user;
 		}
-	  
+
+
+	
 	    
 
 }
