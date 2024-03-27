@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import coms.model.cartorder.CartItem;
 import coms.model.cartorder.UserOrder;
+import coms.model.dtos.CartItemResponseDto;
 import coms.model.product.Product;
 import coms.model.product.ProductImage;
 import coms.model.product.ProductQuantity;
@@ -47,7 +48,7 @@ public class UserOrderController {
     @PostMapping("/user/create/order")
     public ResponseEntity<?> createOrder(@Valid @RequestBody UserOrder cartOrder) {
         // Retrieve cart items from the cart associated with the user
-        List<CartItem> cartItems = cartwishservice.getAllCartItemsByUsername(cartOrder.getUsername());
+        List<CartItemResponseDto> cartItems = cartwishservice.getAllCartItemsByUsername(cartOrder.getUsername());
         
         // Calculate total price based on cart items
         double totalPrice = calculateTotalPrice(cartItems);
@@ -69,7 +70,7 @@ public class UserOrderController {
         userOrder.setPaymentMode(cartOrder.getPaymentMode());
 
         Set<ProductQuantity> productQuantities = new HashSet<>();
-        for (CartItem cartItem : cartItems) {
+        for (CartItemResponseDto cartItem : cartItems) {
             Product product = cartItem.getProduct();
             int quantity = cartItem.getQuantity();
 
@@ -86,9 +87,9 @@ public class UserOrderController {
         return ResponseEntity.ok(orderCreated);
     }
 
-    private double calculateTotalPrice(List<CartItem> cartItems) {
+    private double calculateTotalPrice(List<CartItemResponseDto> cartItems) {
         double totalPrice = 0.0;
-        for (CartItem cartItem : cartItems) {
+        for (CartItemResponseDto cartItem : cartItems) {
             totalPrice += cartItem.getProduct().getPrice() * cartItem.getQuantity();
         }
         return totalPrice;

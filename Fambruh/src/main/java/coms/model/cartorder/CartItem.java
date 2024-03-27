@@ -2,6 +2,7 @@ package coms.model.cartorder;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import coms.model.product.Product;
 import coms.model.user.User;
@@ -14,12 +15,15 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @JsonIgnore
     @ManyToOne
     private User user;
 
     @OneToOne
     private Product product;
+    
+    private int quantity; // Add quantity field
 
     @OneToOne
     private comboproduct comboproduct;
@@ -36,6 +40,15 @@ public class CartItem {
 		super();
 		this.user = user;
 		this.product = product;
+		this.comboproduct = comboproduct;
+		this.size = size;
+	}
+	
+	public CartItem(User user, Product product, int quantity, comboproduct comboproduct, Size size) {
+		super();
+		this.user = user;
+		this.product = product;
+		this.quantity = quantity;
 		this.comboproduct = comboproduct;
 		this.size = size;
 	}
@@ -82,10 +95,6 @@ public class CartItem {
 	public void setSize(Size size) {
 		this.size = size;
 	}
-
-
-
-    private int quantity; // Add quantity field
 
     // Constructor and other methods...
 

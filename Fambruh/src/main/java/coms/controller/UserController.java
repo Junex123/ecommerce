@@ -33,21 +33,27 @@ public class UserController {
 	//init admin user
 	@PostConstruct
 	public void createAdmin(){
-	    User admin = new User();
-	    admin.setUsername("fambruh@army");
-	    admin.setPassword("admin123");
-	    admin.setEmail("shaikhjunaidgh@gmail.com"); // Set the email
-	    
-	    Role role = new Role();
-	    role.setRoleId(101L);
-	    role.setRoleName("ADMIN");
-	    UserRole ur = new UserRole();
-	    ur.setUser(admin);
-	    ur.setRole(role);
-	    Set<UserRole> userRole = new HashSet<>();
-	    userRole.add(ur);
-	    User adminCreated = this.userService.createUser(admin, userRole);
-	    System.out.println("Admin username: "+adminCreated.getUsername());
+		User foundUser = userService.getByUsername("fambruh@army");
+		if(foundUser == null) {
+		    User admin = new User();
+		    admin.setUsername("fambruh@army");
+		    admin.setPassword("admin123");
+		    admin.setEmail("shaikhjunaidgh@gmail.com"); // Set the email
+		    
+		    Role role = new Role();
+		    role.setRoleId(101L);
+		    role.setRoleName("ADMIN");
+		    UserRole ur = new UserRole();
+		    ur.setUser(admin);
+		    ur.setRole(role);
+		    Set<UserRole> userRole = new HashSet<>();
+		    userRole.add(ur);
+		    User adminCreated = this.userService.createUser(admin, userRole);
+		    System.out.println("Admin username: "+adminCreated.getUsername());
+		}
+		else if(foundUser.getUsername().equals("fambruh@army")) {
+			System.out.println("ATTENTION: fambruh@army ALREADY CREATED");
+		}
 	}
 
 	

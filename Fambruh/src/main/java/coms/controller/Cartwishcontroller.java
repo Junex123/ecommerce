@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import coms.model.cartorder.CartItem;
 import coms.model.cartorder.Wishlist;
+import coms.model.dtos.CartItemResponseDto;
 import coms.model.product.Product;
 import coms.repository.Size;
 import coms.service.Cartwishservice;
@@ -22,8 +23,8 @@ public class Cartwishcontroller {
     private Cartwishservice cartWishService;
 
     @GetMapping("/cart")
-    public ResponseEntity<List<CartItem>> getAllCartItems(@RequestParam String username) {
-        List<CartItem> cartItems = cartWishService.getAllCartItemsByUsername(username);
+    public ResponseEntity<List<CartItemResponseDto>> getAllCartItems(@RequestParam String username) {
+    	List<CartItemResponseDto> cartItems = cartWishService.getAllCartItemsByUsername(username);
         return ResponseEntity.ok(cartItems);
     }
 

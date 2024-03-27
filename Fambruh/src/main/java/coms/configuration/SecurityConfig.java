@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -45,6 +47,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
+    }
+    
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("your.smtp.host"); // Set your SMTP host here
+        mailSender.setPort(587); // Set your SMTP port here (typically 587 for TLS)
+        mailSender.setUsername("your.email@example.com"); // Set your email username
+        mailSender.setPassword("your-email-password"); // Set your email password
+        // You can configure more properties like protocol, default encoding, etc.
+        return mailSender;
     }
 
     @Override

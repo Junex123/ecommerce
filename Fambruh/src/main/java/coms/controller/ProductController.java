@@ -40,7 +40,7 @@ public class ProductController {
         img.setName(file.getOriginalFilename());
         img.setType(file.getContentType());
         img.setImageData(ImageUtil.compressImage(file.getBytes()));
-        Product p = null;
+        Product p = new Product();
         try {
             p = objectMapper.readValue(product, Product.class);
             p.getProductImages().add(img); // Adding the image to the product's image set

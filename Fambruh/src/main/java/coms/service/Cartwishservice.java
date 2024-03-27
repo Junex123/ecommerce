@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import coms.model.cartorder.CartItem;
 import coms.model.cartorder.Wishlist;
+import coms.model.dtos.CartItemResponseDto;
 import coms.model.product.Product;
 import coms.repository.*;
 import coms.model.user.User;
 import coms.repository.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,8 +26,26 @@ public class Cartwishservice {
     private UserRepo userRepository;
 
     // Method to retrieve all cart items by user's username
-    public List<CartItem> getAllCartItemsByUsername(String username) {
-        return cartItemRepository.findByUserUsername(username);
+    public List<CartItemResponseDto> getAllCartItemsByUsername(String username) {
+        return remapCartItemToDTO(cartItemRepository.findByUserUsername(username));
+    }
+    
+    private static List<CartItemResponseDto> remapCartItemToDTO(List<CartItem> cartItem){
+    	List<CartItemResponseDto> responseDto = new ArrayList<>();
+    	
+    	for(CartItem item : cartItem) {
+    		CartItemResponseDto dtoItem = new CartItemResponseDto();
+    		dtoItem.setId(item.getId());
+    		dtoItem.setUsername(item.getUser().getUsername());
+    		dtoItem.setProduct(item.getProduct());
+    		dtoItem.setQuantity(item.getQuantity());
+    		dtoItem.setComboproduct(item.getComboproduct());
+    		dtoItem.setSize(item.getSize());
+    		
+    		responseDto.add(dtoItem);
+    	}
+    	
+    	return responseDto;
     }
 
     // Method to retrieve all wishlist items by user's username
@@ -53,7 +73,7 @@ public class Cartwishservice {
     // Method to add a product to the cart
     public void addToCart(Product product, int quantity, String username) {
         User user = userRepository.findByUsername(username);
-        CartItem cartItem = new CartItem(user, product, null, null); // Assuming no combo product and size
+        CartItem cartItem = new CartItem(user, product, quantity, null, null); // Assuming no combo product and size
         cartItemRepository.save(cartItem);
     }
 
