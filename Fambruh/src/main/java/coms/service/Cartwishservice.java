@@ -1,99 +1,98 @@
 package coms.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import coms.model.cartorder.CartItem;
-import coms.model.cartorder.Wishlist;
-import coms.model.product.Product;
-import coms.repository.*;
-import coms.model.user.User;
-import coms.repository.Size;
 
+import coms.configuration.JwtUtil;
+import coms.model.cartorder.Cart;
+import coms.model.product.Product;
+import coms.model.user.User;
+import coms.repository.CartRepository;
+import coms.repository.ProductRepo;
+import coms.repository.UserRepo;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class Cartwishservice {
 
     @Autowired
-    private cartitemrepo cartItemRepository;
+    private ProductRepo productrepo;
 
     @Autowired
-    private wishlistrepository wishlistRepository;
+    private UserRepo userrepo;
 
     @Autowired
-    private UserRepo userRepository;
+    private CartRepository cartRepository;
 
-    // Method to retrieve all cart items by user's username
-    public List<CartItem> getAllCartItemsByUsername(String username) {
-        return cartItemRepository.findByUserUsername(username);
-    }
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    // Method to retrieve all wishlist items by user's username
-    public List<Wishlist> getAllWishlistItemsByUsername(String username) {
-        return wishlistRepository.findByUserUsername(username);
-    }
-
-    // Method to remove a cart item by its ID
-    public void removeCartItemById(Long cartItemId) {
-        cartItemRepository.deleteById(cartItemId);
-    }
-
-    // Method to remove a wishlist item by its ID
-    public void removeWishlistItemById(int wishlistItemId) {
-        wishlistRepository.deleteById(wishlistItemId);
-    }
-
-    // Method to add a product to the wishlist
-    public void addToWishlist(Product product, String username) {
-        User user = userRepository.findByUsername(username);
-        Wishlist wishlistItem = new Wishlist(user, product);
-        wishlistRepository.save(wishlistItem);
-    }
-
-    // Method to add a product to the cart
-    public void addToCart(Product product, int quantity, String username) {
-        User user = userRepository.findByUsername(username);
-        CartItem cartItem = new CartItem(user, product, null, null); // Assuming no combo product and size
-        cartItemRepository.save(cartItem);
-    }
-
-    // Method to move a cart item to the wishlist
-    public void moveCartItemToWishlist(Long cartItemId, String username) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
-        if (cartItem != null) {
-            Product product = cartItem.getProduct();
-            removeCartItemById(cartItemId);
-            addToWishlist(product, username);
+    public void deleteCartItem(Long cartId, String jwtToken) {
+        String username = extractUsernameFromToken(jwtToken);
+        if (username != null) {
+            User user = userrepo.findByUsername(username);
+            if (user != null) {
+                cartRepository.deleteById(cartId);
+            } else {
+                throw new RuntimeException("User not found");
+            }
+        } else {
+            throw new RuntimeException("Invalid token");
         }
     }
 
-    // Method to move a wishlist item to the cart
-    public void moveWishlistItemToCart(int wishlistItemId, String username) {
-        Wishlist wishlistItem = wishlistRepository.findById(wishlistItemId).orElse(null);
-        if (wishlistItem != null) {
-            Product product = wishlistItem.getProduct();
-            removeWishlistItemById(wishlistItemId);
-            addToCart(product, 1, username);
+    public Cart addToCart(Long pid, String jwtToken) {
+        String username = extractUsernameFromToken(jwtToken);
+        if (username != null) {
+            User user = userrepo.findByUsername(username);
+            if (user != null) {
+                Product product = productrepo.findById(pid).orElse(null);
+                if (product != null) {
+                    List<Cart> cartList = cartRepository.findByUser(user);
+                    List<Cart> filteredList = cartList.stream().filter(x -> x.getProduct().getPid() == pid).collect(Collectors.toList());
+
+                    if (filteredList.isEmpty()) {
+                        Cart cart = new Cart(product, user);
+                        return cartRepository.save(cart);
+                    } else {
+                        return null; // Product already exists in the cart
+                    }
+                } else {
+                    throw new RuntimeException("Product not found");
+                }
+            } else {
+                throw new RuntimeException("User not found");
+            }
+        } else {
+            throw new RuntimeException("Invalid token");
         }
     }
 
-    // Method to update the quantity of a cart item by product ID
-    public void updateCartItemQuantity(Long cartItemId, int quantity) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
-        if (cartItem != null) {
-            cartItem.setQuantity(quantity);
-            cartItemRepository.save(cartItem);
+    public List<Cart> getCartDetails(String jwtToken) {
+        String username = extractUsernameFromToken(jwtToken);
+        if (username != null) {
+            User user = userrepo.findByUsername(username);
+            if (user != null) {
+                return cartRepository.findByUser(user);
+            } else {
+                throw new RuntimeException("User not found");
+            }
+        } else {
+            throw new RuntimeException("Invalid token");
         }
     }
 
-    // Method to update the size of a cart item
-    public void updateCartItemSize(Long cartItemId, Size size) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
-        if (cartItem != null) {
-            cartItem.setSize(size);
-            cartItemRepository.save(cartItem);
+    // Method to extract username from JWT token using JwtUtil
+    private String extractUsernameFromToken(String jwtToken) {
+        try {
+            return jwtUtil.extractUsername(jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
-
-    // Other methods...
 }

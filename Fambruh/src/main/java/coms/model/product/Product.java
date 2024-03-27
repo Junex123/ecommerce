@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import coms.model.product.*;
 import coms.repository.Size;
 
 
+
 @Entity
+
 @Table(name = "products")
 public class Product {
 
@@ -24,7 +26,8 @@ public class Product {
 
     @NotBlank(message = "brand cannot be blank")
     private String brand;
-
+    
+    @Column(length = 2000)
     @NotBlank(message = "description cannot be blank")
     private String description;
 
@@ -37,62 +40,81 @@ public class Product {
     @NotNull(message = "price cannot be null")
     private Double price;
 
+    private Double productDiscountedPrice;
+    
     @NotNull(message = "isAvailable cannot be null")
     private boolean isAvailable;
 
-    @ElementCollection
-    @CollectionTable(name = "product_sizes", joinColumns = @JoinColumn(name = "pid"))
-    @Enumerated(EnumType.STRING)
-    private Set<Size> sizes;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "product_images",
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "product_size_table",
             joinColumns = {
                     @JoinColumn(name = "product_id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "image_id")
+                    @JoinColumn(name = "size_id")
             }
     )
-    private Set<ProductImage> productImages;
+    private Set<ProductSize> sizes;
+
+    @OneToOne(cascade = CascadeType.ALL)
+ 	@JsonManagedReference
+ 	private ProductImageMain mainImage;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+  	@JsonManagedReference
+  	private ProductImageHover hoverImage;
+     
+    @OneToOne(cascade = CascadeType.ALL)
+  	@JsonManagedReference
+  	private ProductImage1 image1;
+     
+    @OneToOne(cascade = CascadeType.ALL)
+  	@JsonManagedReference
+  	private ProductImage2 image2;
+     
+    @OneToOne(cascade = CascadeType.ALL)
+  	@JsonManagedReference
+  	private ProductImage3 image3;
+     
+    @OneToOne(cascade = CascadeType.ALL)
+  	@JsonManagedReference
+  	private ProductImageDetail detailImage;
     
     
-    
-    public Product() {
-        // Default constructor for JPA
-    }
+
+	public Product() {
+		super();
+	}
 
 
 
-
-
-
-
-    public Product(Long pid, @NotBlank(message = "name cannot be blank") String name,
-            @NotBlank(message = "brand cannot be blank") String brand,
-            @NotBlank(message = "description cannot be blank") String description,
-            @NotBlank(message = "salt cannot be blank") String salt,
-            @NotNull(message = "available cannot be null") int totalAvailable,
-            @NotNull(message = "price cannot be null") Double price,
-            @NotNull(message = "isAvailable cannot be null") boolean isAvailable,
-            Set<Size> sizes, Set<ProductImage> productImages) {
-        super();
-        this.pid = pid;
-        this.name = name;
-        this.brand = brand;
-        this.description = description;
-        this.salt = salt;
-        this.totalAvailable = totalAvailable;
-        this.price = price;
-        this.isAvailable = isAvailable;
-        
-        this.sizes = sizes;
-        this.productImages = productImages;
-    }
-
-
-
-
+	public Product(Long pid, @NotBlank(message = "name cannot be blank") String name,
+			@NotBlank(message = "brand cannot be blank") String brand,
+			@NotBlank(message = "description cannot be blank") String description,
+			@NotBlank(message = "salt cannot be blank") String salt,
+			@NotNull(message = "available cannot be null") int totalAvailable,
+			@NotNull(message = "price cannot be null") Double price, Double productDiscountedPrice,
+			@NotNull(message = "isAvailable cannot be null") boolean isAvailable, Set<ProductSize> sizes,
+			ProductImageMain mainImage, ProductImageHover hoverImage, ProductImage1 image1, ProductImage2 image2,
+			ProductImage3 image3, ProductImageDetail detailImage) {
+		super();
+		this.pid = pid;
+		this.name = name;
+		this.brand = brand;
+		this.description = description;
+		this.salt = salt;
+		this.totalAvailable = totalAvailable;
+		this.price = price;
+		this.productDiscountedPrice = productDiscountedPrice;
+		this.isAvailable = isAvailable;
+		this.sizes = sizes;
+		this.mainImage = mainImage;
+		this.hoverImage = hoverImage;
+		this.image1 = image1;
+		this.image2 = image2;
+		this.image3 = image3;
+		this.detailImage = detailImage;
+	}
 
 
 
@@ -180,6 +202,18 @@ public class Product {
 
 
 
+	public Double getProductDiscountedPrice() {
+		return productDiscountedPrice;
+	}
+
+
+
+	public void setProductDiscountedPrice(Double productDiscountedPrice) {
+		this.productDiscountedPrice = productDiscountedPrice;
+	}
+
+
+
 	public boolean isAvailable() {
 		return isAvailable;
 	}
@@ -192,40 +226,102 @@ public class Product {
 
 
 
-
-
-
-
-
-	public Set<Size> getSizes() {
+	public Set<ProductSize> getSizes() {
 		return sizes;
 	}
 
 
 
-
-
-
-
-	public void setSizes(Set<Size> sizes) {
+	public void setSizes(Set<ProductSize> sizes) {
 		this.sizes = sizes;
 	}
 
 
 
-
-
-
-
-	public Set<ProductImage> getProductImages() {
-		return productImages;
+	public ProductImageMain getMainImage() {
+		return mainImage;
 	}
 
 
 
-	public void setProductImages(Set<ProductImage> productImages) {
-		this.productImages = productImages;
+	public void setMainImage(ProductImageMain mainImage) {
+		this.mainImage = mainImage;
 	}
+
+
+
+	public ProductImageHover getHoverImage() {
+		return hoverImage;
+	}
+
+
+
+	public void setHoverImage(ProductImageHover hoverImage) {
+		this.hoverImage = hoverImage;
+	}
+
+
+
+	public ProductImage1 getImage1() {
+		return image1;
+	}
+
+
+
+	public void setImage1(ProductImage1 image1) {
+		this.image1 = image1;
+	}
+
+
+
+	public ProductImage2 getImage2() {
+		return image2;
+	}
+
+
+
+	public void setImage2(ProductImage2 image2) {
+		this.image2 = image2;
+	}
+
+
+
+	public ProductImage3 getImage3() {
+		return image3;
+	}
+
+
+
+	public void setImage3(ProductImage3 image3) {
+		this.image3 = image3;
+	}
+
+
+
+	public ProductImageDetail getDetailImage() {
+		return detailImage;
+	}
+
+
+
+	public void setDetailImage(ProductImageDetail detailImage) {
+		this.detailImage = detailImage;
+	}
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
 
    
 }

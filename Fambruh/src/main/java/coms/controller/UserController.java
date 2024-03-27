@@ -30,25 +30,31 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	//init admin user
 	@PostConstruct
-	public void createAdmin(){
-	    User admin = new User();
-	    admin.setUsername("fambruh@army");
-	    admin.setPassword("admin123");
-	    admin.setEmail("shaikhjunaidgh@gmail.com"); // Set the email
-	    
-	    Role role = new Role();
-	    role.setRoleId(101L);
-	    role.setRoleName("ADMIN");
-	    UserRole ur = new UserRole();
-	    ur.setUser(admin);
-	    ur.setRole(role);
-	    Set<UserRole> userRole = new HashSet<>();
-	    userRole.add(ur);
-	    User adminCreated = this.userService.createUser(admin, userRole);
-	    System.out.println("Admin username: "+adminCreated.getUsername());
+	public void createAdmin() {
+	    User existingAdmin = this.userService.getByUsername("fambruh@army");
+	    if (existingAdmin != null) {
+	        System.out.println("Admin user with username 'fambruh@army' already exists!");
+	        // Handle the situation where the admin user already exists
+	    } else {
+	        User admin = new User();
+	        admin.setUsername("fambruh@army");
+	        admin.setPassword("admin123");
+	        admin.setEmail("shaikhjunaidgh@gmail.com"); // Set the email
+
+	        Role role = new Role();
+	        role.setRoleId(101L);
+	        role.setRoleName("ADMIN");
+	        UserRole ur = new UserRole();
+	        ur.setUser(admin);
+	        ur.setRole(role);
+	        Set<UserRole> userRole = new HashSet<>();
+	        userRole.add(ur);
+	        User adminCreated = this.userService.createUser(admin, userRole);
+	        System.out.println("Admin username: " + adminCreated.getUsername());
+	    }
 	}
+
 
 	
 	//create new user

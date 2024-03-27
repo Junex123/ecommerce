@@ -5,30 +5,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import coms.model.product.Product;
-import coms.model.product.ProductImage;
+import coms.model.product.ProductImageMain;
 import coms.model.product.ProductSize;
 import coms.model.product.comboproduct;
 import coms.repository.ComboProductRepository;
-import coms.repository.ProductImageRepository;
+
 import coms.repository.ProductRepo;
-import coms.repository.ProductSizeRepository;
+
+import coms.repository.Sizerepo;
+import coms.repository.UserRepo;
+
+import coms.repository.wishlistrepository;
 
 @Service
 public class ProductService {
     
     @Autowired
     private ProductRepo productRepo;
-    
-    @Autowired
-    private ProductImageRepository productImageRepository;
-    
-    @Autowired
-    private ProductSizeRepository productSizeRepository;
+
 
     @Autowired
     private ComboProductRepository comboProductRepository;
+    
+    @Autowired
+    private UserRepo userrepo;
+    
+    
 
-    // Product Services
+    
+    @Autowired
+    private wishlistrepository wishlistrepo;
+    
+    @Autowired
+    private Sizerepo sizerepo;
 
     // Add a product
     public Product addProduct(Product product) {
@@ -60,33 +69,19 @@ public class ProductService {
         return this.productRepo.findByNameAndIsAvailableTrue(name);
     }
 
-    // Product Image Services
 
-    // Add a product image
-    public ProductImage addProductImage(ProductImage productImage) {
-        return this.productImageRepository.save(productImage);
-    }
-
-    // Find all product images
-    public List<ProductImage> findAllProductImages() {
-        return this.productImageRepository.findAll();
-    }
-
-    // Find a product image by ID
-    public ProductImage findProductImageById(Long imgId) {
-        return this.productImageRepository.findById(imgId).orElse(null);
-    }
+  
 
     // Product Size Services
 
     // Add a product size
     public ProductSize addProductSize(ProductSize productSize) {
-        return this.productSizeRepository.save(productSize);
+        return this.sizerepo.save(productSize);
     }
 
     // Find all product sizes
     public List<ProductSize> findAllProductSizes() {
-        return this.productSizeRepository.findAll();
+        return this.sizerepo.findAll();
     }
 
     // Combo Product Services
@@ -112,4 +107,6 @@ public class ProductService {
         this.comboProductRepository.deleteById(id);
     }
     // ...
+    
+    
 }

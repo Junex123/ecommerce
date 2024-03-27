@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.medicare</groupId>
-	<artifactId>Medicare-Backend</artifactId>
+	<artifactId>fambruh</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Medicare-Backend</name>
 	<description>Capstone project Medicare-backend</description>
@@ -57,11 +57,7 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
-		<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-mail</artifactId>
-</dependency>
-
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -71,11 +67,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.kubaokleja</groupId>
-			<artifactId>springboot-angular</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 
