@@ -1,7 +1,6 @@
 package coms.controller;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -10,15 +9,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import coms.configuration.ImageUtil;
 import coms.model.product.Product;
-
-import coms.model.product.*;
+import coms.model.product.ProductImage1;
+import coms.model.product.ProductImage2;
+import coms.model.product.ProductImage3;
+import coms.model.product.ProductImageDetail;
+import coms.model.product.ProductImageHover;
+import coms.model.product.ProductImageMain;
+import coms.model.product.comboproduct;
 import coms.service.ProductService;
 
 @RestController
@@ -93,6 +106,7 @@ public class ProductController {
        
         // Populate product object with image instances
         Product product = null;
+
         try {
             product = objectMapper.readValue(productData, Product.class);
             product.setMainImage(img1);
