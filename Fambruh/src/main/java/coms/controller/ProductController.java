@@ -45,7 +45,6 @@ public class ProductController {
     private ObjectMapper objectMapper;
     
    
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add/product")
     public ResponseEntity<?> addNewProduct(@RequestParam("product") String productData,
                                            @RequestParam("mainImage") MultipartFile mainImageFile,
@@ -54,25 +53,27 @@ public class ProductController {
                                            @RequestParam("image1") MultipartFile Image1file,
                                            @RequestParam("image2") MultipartFile Image2file,
                                            @RequestParam("image3") MultipartFile Image3file) throws IOException {
-        if (!mainImageFile.getContentType().startsWith("image/") && !mainImageFile.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the main image.");
+        // Check content types of all files to ensure they are images
+        if (!isValidImage(mainImageFile)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for the main image.");
         }
-        if (!hoverImagefile.getContentType().startsWith("image/") && !hoverImagefile.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the additional image.");
+        if (!isValidImage(hoverImagefile)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for the hover image.");
         }
-        if (!detailImagefile.getContentType().startsWith("image/") && !detailImagefile.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the additional image.");
+        if (!isValidImage(detailImagefile)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for the detail image.");
         }
-        if (!Image1file.getContentType().startsWith("image/") && !Image1file.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the additional image.");
+        if (!isValidImage(Image1file)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for image 1.");
         }
-        if (!Image2file.getContentType().startsWith("image/") && !Image2file.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the additional image.");
+        if (!isValidImage(Image2file)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for image 2.");
         }
-        if (!Image3file.getContentType().startsWith("image/") && !Image3file.getContentType().equals("image/gif")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images and GIFs are allowed for the additional image.");
+        if (!isValidImage(Image3file)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Only images, GIFs, and WebP images are allowed for image 3.");
         }
 
+        // Create instances for each image
         ProductImageMain img1 = new ProductImageMain();
         img1.setName(mainImageFile.getOriginalFilename());
         img1.setType(mainImageFile.getContentType());
@@ -102,7 +103,8 @@ public class ProductController {
         img6.setName(Image3file.getOriginalFilename());
         img6.setType(Image3file.getContentType());
         img6.setImageData(ImageUtil.compressImage(Image3file.getBytes()));
-
+       
+        // Populate product object with image instances
         Product product = null;
 
         try {
@@ -117,8 +119,24 @@ public class ProductController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Request");
         }
+        // Save the product
         Product addedProduct = this.productService.addProduct(product);
         return ResponseEntity.ok(addedProduct);
+    }
+
+    private boolean isValidImage1(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && (contentType.startsWith("image/") || contentType.equals("image/gif") || contentType.equals("image/webp"));
+    }
+
+
+    // Helper method to validate image file format
+    private boolean isValidImage(MultipartFile file) {
+        if (file.getContentType() != null) {
+            String contentType = file.getContentType();
+            return contentType.startsWith("image/") || contentType.equals("image/gif") || contentType.equals("image/webp");
+        }
+        return false;
     }
 
 

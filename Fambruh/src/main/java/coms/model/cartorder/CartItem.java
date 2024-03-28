@@ -1,5 +1,6 @@
 package coms.model.cartorder;
 
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -99,4 +100,5 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-}
+
+	

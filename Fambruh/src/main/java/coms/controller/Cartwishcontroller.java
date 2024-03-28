@@ -1,11 +1,14 @@
 package coms.controller;
 
+
 import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,18 @@ import coms.model.product.Product;
 import coms.repository.Size;
 import coms.service.Cartwishservice;
 
+
+import org.springframework.web.bind.annotation.*;
+
+import coms.model.CartItemResponseDto;
+import coms.model.cartorder.CartItem;
+import coms.model.cartorder.Wishlist;
+import coms.model.user.*;
+import coms.model.product.Product;
+import coms.repository.Size;
+import coms.service.Cartwishservice;
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "*")
 public class Cartwishcontroller {
@@ -29,7 +44,9 @@ public class Cartwishcontroller {
     private Cartwishservice cartWishService;
 
     @GetMapping("/cart")
+
     public ResponseEntity<List<CartItemResponseDto>> getAllCartItems(@RequestParam String username) {
+    public ResponseEntity<List<CartItemResponseDto>> getAllCartItems(@RequestParam User username) {
     	List<CartItemResponseDto> cartItems = cartWishService.getAllCartItemsByUsername(username);
         return ResponseEntity.ok(cartItems);
     }
