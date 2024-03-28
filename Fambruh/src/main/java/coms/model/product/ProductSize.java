@@ -5,10 +5,14 @@ import javax.validation.constraints.NotNull;
 
 import coms.repository.Size;
 
+
 @Entity
+
 public class ProductSize {
 
-    @Id
+ 
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long sizeId;
 
@@ -21,48 +25,49 @@ public class ProductSize {
     @ManyToOne
     private Product product;
 
-    // Constructors, getters, setters...
-
     public ProductSize() {
-        // Default constructor for JPA
-    }
+ 		super();
+ 	}
 
-    public ProductSize(Long sizeId, Size sizeName, boolean isAvailable, Product product) {
-        this.sizeId = sizeId;
-        this.sizeName = sizeName;
-        this.isAvailable = isAvailable;
-        this.product = product;
-    }
+	public ProductSize(Size sizeName, @NotNull(message = "isAvailable cannot be null") boolean isAvailable,
+			Product product) {
+		super();
+		this.sizeName = sizeName;
+		this.isAvailable = isAvailable;
+		this.product = product;
+	}
 
-    public Long getSizeId() {
-        return sizeId;
-    }
+	public Long getSizeId() {
+		return sizeId;
+	}
 
-    public void setSizeId(Long sizeId) {
-        this.sizeId = sizeId;
-    }
+	public void setSizeId(Long sizeId) {
+		this.sizeId = sizeId;
+	}
 
-    public Size getSizeName() {
-        return sizeName;
-    }
+	public Size getSizeName() {
+		return sizeName;
+	}
 
-    public void setSizeName(Size sizeName) {
-        this.sizeName = sizeName;
-    }
+	public void setSizeName(Size sizeName) {
+		this.sizeName = sizeName;
+	}
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
+	public boolean isAvailable() {
+		return isAvailable;
+	}
 
-    public void setAvailable(boolean isAvailable) {
-        this.isAvailable = isAvailable;
-    }
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+    
+    
 }

@@ -11,7 +11,6 @@ import coms.model.product.*;
 
 @Entity
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +34,6 @@ public class CartItem {
 		super();
 	}
 
-
 	public CartItem(User user, Product product, coms.model.product.comboproduct comboproduct, Size size) {
 		super();
 		this.user = user;
@@ -52,7 +50,6 @@ public class CartItem {
 		this.comboproduct = comboproduct;
 		this.size = size;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -86,17 +83,13 @@ public class CartItem {
 		this.comboproduct = comboproduct;
 	}
 
-
 	public Size getSize() {
 		return size;
 	}
 
-
 	public void setSize(Size size) {
 		this.size = size;
 	}
-
-    // Constructor and other methods...
 
     public int getQuantity() {
         return quantity;
@@ -106,6 +99,4 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    
-    
 }

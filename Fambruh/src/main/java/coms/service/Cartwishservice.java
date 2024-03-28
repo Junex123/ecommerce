@@ -1,27 +1,29 @@
 package coms.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import coms.model.cartorder.CartItem;
-import coms.model.cartorder.Wishlist;
-import coms.model.dtos.CartItemResponseDto;
-import coms.model.product.Product;
-import coms.repository.*;
-import coms.model.user.User;
-import coms.repository.Size;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import coms.model.cartorder.CartItem;
+import coms.model.cartorder.Wishlist;
+import coms.model.dtos.CartItemResponseDto;
+import coms.model.product.Product;
+import coms.model.user.User;
+import coms.repository.CartRepository;
+import coms.repository.Size;
+import coms.repository.UserRepo;
+import coms.repository.wishlistrepository;
+
 @Service
 public class Cartwishservice {
-
+    
     @Autowired
-    private cartitemrepo cartItemRepository;
-
+    private CartRepository cartItemRepository;
     @Autowired
     private wishlistrepository wishlistRepository;
-
     @Autowired
     private UserRepo userRepository;
 
@@ -86,8 +88,8 @@ public class Cartwishservice {
             addToWishlist(product, username);
         }
     }
-
-    // Method to move a wishlist item to the cart
+    
+ // Method to move a wishlist item to the cart
     public void moveWishlistItemToCart(int wishlistItemId, String username) {
         Wishlist wishlistItem = wishlistRepository.findById(wishlistItemId).orElse(null);
         if (wishlistItem != null) {
@@ -96,8 +98,8 @@ public class Cartwishservice {
             addToCart(product, 1, username);
         }
     }
-
-    // Method to update the quantity of a cart item by product ID
+    
+ // Method to update the quantity of a cart item by product ID
     public void updateCartItemQuantity(Long cartItemId, int quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
         if (cartItem != null) {
@@ -105,15 +107,12 @@ public class Cartwishservice {
             cartItemRepository.save(cartItem);
         }
     }
-
     // Method to update the size of a cart item
     public void updateCartItemSize(Long cartItemId, Size size) {
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
         if (cartItem != null) {
-            cartItem.setSize(size);
+          
             cartItemRepository.save(cartItem);
         }
     }
-
-    // Other methods...
 }

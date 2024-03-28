@@ -22,8 +22,8 @@ public class ProductQuantity {
 
     }
 
-    public ProductQuantity(Long pqid, Product product, int quantity) {
-        this.pqid = pqid;
+    public ProductQuantity(Product product, int quantity) {
+     
         this.product = product;
         this.quantity = quantity;
     }

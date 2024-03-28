@@ -2,6 +2,10 @@ package coms.model.blog;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.util.Date; // Import Date class
+
 @Entity
 public class Blog {
 
@@ -10,7 +14,10 @@ public class Blog {
     private Long id;
 
     private String title;
-
+    @Lob
+    private String contentshort;
+    
+    
     @Lob
     private String content1;
 
@@ -23,27 +30,46 @@ public class Blog {
     // New field for author
     private String author;
 
-    // Other fields and relationships as needed
+    // Field to store the date of the post
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date postDate;
+    
+    private int viewCount;
 
-    @OneToOne
-    @JoinColumn(name = "blog_image_id")
-    private BlogImage blogImage;
+    @OneToOne(cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private BlogImage blogImage;
 
     // Constructors, getters, and setters
     public Blog() {
     }
 
-    public Blog(Long id, String title, String content1, String content2, String content3, String author, BlogImage blogImage) {
-        this.id = id;
-        this.title = title;
-        this.content1 = content1;
-        this.content2 = content2;
-        this.content3 = content3;
-        this.author = author;
-        this.blogImage = blogImage;
-    }
+    
+    
 
-    public Long getId() {
+
+
+	public Blog(Long id, String title, String contentshort, String content1, String content2, String content3,
+			String author, Date postDate, int viewCount, BlogImage blogImage) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.contentshort = contentshort;
+		this.content1 = content1;
+		this.content2 = content2;
+		this.content3 = content3;
+		this.author = author;
+		this.postDate = postDate;
+		this.viewCount = viewCount;
+		this.blogImage = blogImage;
+	}
+
+
+
+
+
+
+	public Long getId() {
 		return id;
 	}
 
@@ -57,6 +83,14 @@ public class Blog {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getContentshort() {
+		return contentshort;
+	}
+
+	public void setContentshort(String contentshort) {
+		this.contentshort = contentshort;
 	}
 
 	public String getContent1() {
@@ -83,6 +117,30 @@ public class Blog {
 		this.content3 = content3;
 	}
 
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public Date getPostDate() {
+		return postDate;
+	}
+
+	public void setPostDate(Date postDate) {
+		this.postDate = postDate;
+	}
+
+	public int getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
 	public BlogImage getBlogImage() {
 		return blogImage;
 	}
@@ -91,14 +149,6 @@ public class Blog {
 		this.blogImage = blogImage;
 	}
 
-	// Getters and setters for author
-    public String getAuthor() {
-        return author;
-    }
+  
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    // Remaining getters and setters...
 }
